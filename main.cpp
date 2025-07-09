@@ -24,10 +24,11 @@ int GET_POWER_STATUS()
 
 void CHANGE_FREQUENCY(DWORD f)
 {
+    // Frequency is only changed when power source transitions (AC <-> Battery); otherwise, last applied value remains cached and manual changes are ignored.
     if (devm.dmDisplayFrequency == f) return;
     devm.dmDisplayFrequency = f;
     ChangeDisplaySettings(&devm, CDS_UPDATEREGISTRY);
-    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devm);
+    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devm); // Retrieves the system-applied display settings from the last power source transition
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
